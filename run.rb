@@ -26,13 +26,16 @@ build_url  = ENV["WERCKER_BUILD_URL"]
 git_commit = ENV["WERCKER_GIT_COMMIT"]
 git_branch = ENV["WERCKER_GIT_BRANCH"]
 started_by = ENV["WERCKER_STARTED_BY"]
+@deploy = ENV["DEPLOY"] == "true"
 
 def message(app_name, app_url, build_url, git_commit, git_branch, started_by, status)
-  "[[#{app_name}](#{app_url})] [build(#{git_commit[0,8]})](#{build_url}) of #{git_branch} by #{started_by} #{status}"
+  mode = @deploy ? "deploy" : "build"
+  "[[#{app_name}](#{app_url})] [#{mode}(#{git_commit[0,8]})](#{build_url}) of #{git_branch} by #{started_by} #{status}"
 end
 
 def icon_url(status)
-  "https://raw.githubusercontent.com/wantedly/step-pretty-slack-notify/master/icons/#{status}.jpg"
+  mode = @deploy ? "" : "deploy-"
+  "https://raw.githubusercontent.com/wantedly/step-pretty-slack-notify/master/icons/#{mode}#{status}.jpg"
 end
 
 def username_with_status(username, status)
